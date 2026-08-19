@@ -1,7 +1,6 @@
 require("dotenv").config();
 const { createUser,
         findUserByEmail } = require("../utilities/queries");
-const authenticateToken = require("../utilities/authenticateJWT");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 
@@ -49,8 +48,7 @@ const logout = async ( req, res ) => {
 }
 
 const home = async (req, res) => {
-  authenticateToken(req, res, next);
-  res.send("authentication successful");
+  res.send("home page");
 }
 
 module.exports = {

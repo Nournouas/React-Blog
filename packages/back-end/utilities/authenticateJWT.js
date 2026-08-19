@@ -9,6 +9,7 @@ const authenticateToken = (req, res, next) => {
         console.log(err.message);
         return res.status(403).send(err.message);
       } else {
+        console.log("JWT authentication successful");
         next()
       }
     });
