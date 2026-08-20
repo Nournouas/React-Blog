@@ -5,6 +5,15 @@ async function temp (){
 }
 
 // GET =================================================================================
+async function findAllPostsUnpublished () {
+  return await prisma.post.findMany({
+    where: { pubStatus: false },
+    include: {
+      comments: true
+    }
+  });
+}
+
 async function findUserByEmail (email) {
   const user = prisma.user.findFirst({
     where: {email}
@@ -37,6 +46,16 @@ async function findSinglePost (postId) {
         { pubStatus: true }
       ],
     },
+    include: {
+      comments: true
+    }
+  })
+  return post;
+}
+
+async function findSinglePostUnpublished (postId) {
+  const post = await prisma.post.findFirst({
+    where:{ id: postId },
     include: {
       comments: true
     }
@@ -108,6 +127,13 @@ async function deleteCommentById(commentId){
 }
 
 // PUT =================================================================================
+async function updatePostStatus(postId, status){
+  await prisma.post.update({
+    where: { id: postId },
+    data: { pubStatus: status }
+  })
+}
+
 
 module.exports = {
   createUser,
@@ -120,5 +146,8 @@ module.exports = {
   createNewComment,
   findUserById,
   findSingleComment,
-  deleteCommentById
+  deleteCommentById,
+  updatePostStatus,
+  findSinglePostUnpublished,
+  findAllPostsUnpublished
 }

@@ -1,10 +1,31 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-const { deleteCommentById, findSingleComment, findUserById, findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePostById, createNewComment } = require("../utilities/queries");
+const { findAllPostsUnpublished, findSinglePostUnpublished, updatePostStatus, deleteCommentById, findSingleComment, findUserById, findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePostById, createNewComment } = require("../utilities/queries");
 
 const getAllPosts = async (req, res) => {
-  const allPosts = await findAllPosts();
-  return res.send(allPosts);
+  try{
+    const allPosts = await findAllPosts();
+    return res.send(allPosts);
+  }catch(err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
+}
+
+const getAllUnpublishedPosts = async (req, res) => {
+  try{
+    const userId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const user = await findUserById(userId);
+    if (user.admin === true){
+       const allPosts = await findAllPostsUnpublished();
+      return res.send(allPosts);
+    }else{
+      return res.send("not authorised to access this route")
+    }
+  }catch(err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
 }
 
 const createPost = async (req, res) => {
@@ -68,7 +89,7 @@ const deleteComment = async (req, res) => {
     const comment = await findSingleComment(commentId);
     if (comment.authorId === userId || user.admin === true){
       await deleteCommentById(commentId);
-      return res.send("COmment deleted successfully")
+      return res.send("Comment deleted successfully")
     }else{
       return res.send("Not authorised to delete this comment")
     }
@@ -92,6 +113,24 @@ const createComment = async (req, res) => {
   }
 }
 
+const switchPostPublished = async (req, res) => {
+  try{
+    const userId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const user = await findUserById(userId);
+    const postId = parseInt(req.params.postId);
+    const post = await findSinglePostUnpublished(postId);
+    if (user.admin === true ){
+      await updatePostStatus(postId, !post.pubStatus);
+      return res.send("post published succesfully")
+    }else{
+      return res.send("You are not authorised to publish posts")
+    }
+  }catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+}
+
 module.exports = {
   getAllPosts,
   createPost,
@@ -99,5 +138,7 @@ module.exports = {
   getOwnPosts,
   deletePost,
   createComment,
-  deleteComment
+  deleteComment,
+  switchPostPublished,
+  getAllUnpublishedPosts
 }
