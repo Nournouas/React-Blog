@@ -12,6 +12,14 @@ async function findUserByEmail (email) {
   return user;
 }
 
+async function findUserById (id) {
+  const user = prisma.user.findFirst({
+    where: {id}
+  })
+  return user;
+}
+
+
 async function findAllPosts () {
   return await prisma.post.findMany({
     where: { pubStatus: true },
@@ -34,6 +42,13 @@ async function findSinglePost (postId) {
     }
   })
   return post;
+}
+
+async function findSingleComment (commentId) {
+  const comment = await prisma.comment.findFirst({
+    where: { id: commentId },
+  })
+  return comment;
 }
 
 async function findOwnPosts (authorId) {
@@ -80,9 +95,15 @@ async function createNewComment (authorId, postId, body){
 }
 
 // DELETE =================================================================================
-async function deletePost(postId){
+async function deletePostById(postId){
   await prisma.post.delete({
     where: {id: postId}
+  })
+}
+
+async function deleteCommentById(commentId){
+  await prisma.comment.delete({
+    where: {id: commentId}
   })
 }
 
@@ -95,6 +116,9 @@ module.exports = {
   createNewPost,
   findSinglePost,
   findOwnPosts,
-  deletePost,
-  createNewComment
+  deletePostById,
+  createNewComment,
+  findUserById,
+  findSingleComment,
+  deleteCommentById
 }

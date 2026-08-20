@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-const { findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePost, createNewComment } = require("../utilities/queries");
+const { deleteCommentById, findSingleComment, findUserById, findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePostById, createNewComment } = require("../utilities/queries");
 
 const getAllPosts = async (req, res) => {
   const allPosts = await findAllPosts();
@@ -41,13 +41,15 @@ const getOwnPosts = async (req, res) => {
   }
 }
 
-const deleteOwnPost = async (req, res) => {
+//test it works with both admin & author as user
+const deletePost = async (req, res) => {
   try{
-    const authorId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const userId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const user = await findUserById(userId);
     const postId = parseInt(req.params.postId);
     const post = await findSinglePost(postId);
-    if (post.authorId === authorId){
-      await deletePost(postId);
+    if (post.authorId === userId || user.admin === true){
+      await deletePostById(postId);
       return res.send("Post deleted successfully")
     }else{
       return res.send("Not authorised to delete this post")
@@ -56,8 +58,26 @@ const deleteOwnPost = async (req, res) => {
     console.error(err);
     return res.status(500).send(err);
   }
-  
 }
+
+const deleteComment = async (req, res) => {
+  try{
+    const userId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const user = await findUserById(userId);
+    const commentId = parseInt(req.params.commentId);
+    const comment = await findSingleComment(commentId);
+    if (comment.authorId === userId || user.admin === true){
+      await deleteCommentById(commentId);
+      return res.send("COmment deleted successfully")
+    }else{
+      return res.send("Not authorised to delete this comment")
+    }
+  }catch (err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
+}
+
 
 const createComment = async (req, res) => {
   try{
@@ -77,6 +97,7 @@ module.exports = {
   createPost,
   getSinglePost,
   getOwnPosts,
-  deleteOwnPost,
-  createComment
+  deletePost,
+  createComment,
+  deleteComment
 }
