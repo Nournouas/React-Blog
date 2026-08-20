@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 
 const signUp = async ( req, res ) => {
+  res.cookie('jwt', '', {maxAge: 1});
   const { email, password } = req.body;
   try {
     const existingUser = await findUserByEmail(email);
@@ -17,11 +18,12 @@ const signUp = async ( req, res ) => {
     return res.send(newUser);
   }catch(err) {
     console.error(err);
-    res.redirect("/signup");
+    return res.status(500).send(err);
   };
 };
 
 const login = async ( req, res ) => {
+  res.cookie('jwt', '', {maxAge: 1});
   const { email, password } = req.body;
   try{
     const existingUser = await findUserByEmail(email);
@@ -38,22 +40,23 @@ const login = async ( req, res ) => {
   
   }catch(err) {
     console.error(err);
-    return res.send("error try again")
+    return res.status(500).send(err);
   };
 };
 
 const logout = async ( req, res ) => {
-  res.cookie('jwt', '', {maxAge: 1});
-  res.send("logout successful")
-}
-
-const home = async (req, res) => {
-  res.send("home page");
+  try{
+    res.cookie('jwt', '', {maxAge: 1});
+    res.send("logout successful")
+  }catch(err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
+  
 }
 
 module.exports = {
   signUp,
   login,
-  home,
   logout,
 };
