@@ -80,6 +80,20 @@ async function findOwnPosts (authorId) {
   return ownPosts;
 }
 
+async function findAuthorPosts (authorId) {
+  const authorPosts = await prisma.post.findMany({
+    where: { 
+      AND: [
+        {authorId},
+        {pubStatus: true}
+    ]},
+    include: {
+      comments: true
+    }
+  })
+  return authorPosts;
+}
+
 // POST =================================================================================
 async function createUser (email, password) {
   const user = await prisma.user.create({
@@ -149,5 +163,6 @@ module.exports = {
   deleteCommentById,
   updatePostStatus,
   findSinglePostUnpublished,
-  findAllPostsUnpublished
+  findAllPostsUnpublished,
+  findAuthorPosts
 }

@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-const { findAllPostsUnpublished, findSinglePostUnpublished, updatePostStatus, deleteCommentById, findSingleComment, findUserById, findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePostById, createNewComment } = require("../utilities/queries");
+const { findAuthorPosts, findAllPostsUnpublished, findSinglePostUnpublished, updatePostStatus, deleteCommentById, findSingleComment, findUserById, findAllPosts, createNewPost, findSinglePost, findOwnPosts, deletePostById, createNewComment } = require("../utilities/queries");
 
 const getAllPosts = async (req, res) => {
   try{
@@ -131,6 +131,17 @@ const switchPostPublished = async (req, res) => {
   }
 }
 
+const getUserPosts = async (req, res) => {
+  try{
+    const authorId = parseInt(req.params.profileId);
+    const authorPosts = await findAuthorPosts(authorId);
+    return res.send(authorPosts);
+  }catch (err){
+    console.error(err);
+    return res.status(500).send(err);
+  }
+}
+
 module.exports = {
   getAllPosts,
   createPost,
@@ -140,5 +151,6 @@ module.exports = {
   createComment,
   deleteComment,
   switchPostPublished,
-  getAllUnpublishedPosts
+  getAllUnpublishedPosts,
+  getUserPosts
 }
