@@ -10,7 +10,7 @@ const { logout,
 
 accountRouter.post("/signup", signUp);
 accountRouter.post("/login", login);
-accountRouter.use(authenticateToken);
+//accountRouter.use(authenticateToken);
 accountRouter.post("/logout", logout);
 
 module.exports = {

@@ -36,7 +36,8 @@ const login = async ( req, res ) => {
     }
     token = jwt.sign({id: existingUser.id, email: existingUser.email}, process.env.JWT_ACCESS_TOKEN, {expiresIn: "3h"});
     res.cookie('jwt', token, {httpOnly : true, secure: true});
-    return res.send("login successful")
+    console.log(res.cookie)
+    return res.json(token)
   
   }catch(err) {
     console.error(err);
