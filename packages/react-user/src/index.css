@@ -1,4 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Eagle+Lake&family=Quintessential&display=swap');
 @import "tailwindcss";
+
+
+@theme {
+  --color-background: #2B2622;
+  --color-primary: #6B1E23;
+  --color-secondary: #F1E7D0;
+  --color-primary-text: #d34c55; 
+  --color-black: rgb(65, 65, 65); 
+  --color-white: rgb(220, 220, 220);
+}
+
 html, body, #root {
   height: 100%;
+  background-color: var(--color-background);
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-family: "Eagle Lake", serif;
+}
+
+h1{
+  font-size: 36px;
+}
+
+p{
+  font-family: "Quintessential", serif;;
+}
+
+a, button, label{
+  font-family: "Eagle Lake", serif;
+}
+
+a.active {
+  color: var(--color-primary);
+}
+a.pending {
+  color: var(--color-white);
 }
