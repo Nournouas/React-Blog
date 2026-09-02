@@ -6,6 +6,7 @@ export const getAllPosts = async () => {
       method: "GET",
       headers: {
         Accept: 'application/json',
+        cache: "no-store",
         'Authorization': localStorage.getItem('token'),
       },
     });
@@ -83,5 +84,71 @@ export const postNewPost = async (data) => {
   }catch (error) {
     console.log("error");
     console.error(error.message);
+  }
+}
+
+export const getUserDetails = async () => {
+  try{
+    const response = await fetch("http://localhost:3001/details", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        'Authorization': localStorage.getItem('token'),
+      },
+    });
+    if (!response.ok){
+      throw new Error(`Response status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return result
+  }catch(err){
+    console.log("error");
+    console.error(err.message)
+  }
+}
+
+export const logUserOut = async () => {
+  try{
+    const response = await fetch("http://localhost:3001/logout", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        'Authorization': localStorage.getItem('token'),
+      },
+    });
+    if (!response.ok){
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const result = await response.json();
+    if (result){
+      localStorage.removeItem("token");
+      console.log("loggout")
+    }
+    return true;
+
+  }catch(err){
+    console.log("error");
+    console.error(err.message)
+  }
+}
+
+export const deleteOwnPost = async (postId) => {
+  try{
+    const response = await fetch(`http://localhost:3001/API/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        'Authorization': localStorage.getItem('token'),
+      },
+    });
+    if (!response.ok){
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const result = await response.json();
+    return result
+  }catch(err){
+    console.log("error");
+    console.error(err.message)
   }
 }

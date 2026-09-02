@@ -26,7 +26,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
+    <div className="h-screen flex flex-col items-center justify-center bg-secondary">
       <Header title="Sign Up Now To View" highlight="Posts"/>
       <form onSubmit={handleFormSubmit} action="http://localhost:3001/signup" method='POST' className='flex flex-col gap-5'>
         <div className='flex flex-col justify-items-center items-start gap-3 w-100'>

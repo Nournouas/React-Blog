@@ -1,5 +1,6 @@
 import { NavLink } from "react-router";
 import { useState } from 'react'
+import { svgPlus } from "../assets/styles";
 export function Navbar() {
 
   return (
@@ -7,6 +8,7 @@ export function Navbar() {
         <div className="flex row gap-4">
             <NavLink to="/home" className="flex items-center h-full px-6">Home</NavLink>
             <NavLink to="/profile" className="flex items-center h-full px-6">My Profile</NavLink>
+            <NavLink to="/new-post" className="flex items-center h-full px-6">{svgPlus} Create Post</NavLink>
         </div>
         <NavLink to="/logout" className="flex items-center h-full px-6">logout</NavLink>
     </div>
