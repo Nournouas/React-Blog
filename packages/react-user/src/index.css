@@ -43,3 +43,7 @@ a.active {
 a.pending {
   color: var(--color-white);
 }
+
+.tox{
+  width: 100%;
+}

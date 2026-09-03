@@ -1,9 +1,10 @@
-import React from 'react'
+import { React, useState } from 'react'
 import { CTA, CTA_Secondary } from '../assets/styles'
 import { Link, useNavigate } from "react-router";
 import Header from '../Components/Header'
 
 export default function Login() {
+    const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
     const handleFormSubmit = async (e) => {
       e.preventDefault();
@@ -20,6 +21,12 @@ export default function Login() {
         body: JSON.stringify(data)
       })
       const result = await response.json();
+      if (!response.ok){
+        console.log(result.errors)
+        setErrors(result.errors);
+        return;
+      }
+      
       localStorage.setItem('token', result)
       navigate("/home")
 
@@ -40,6 +47,7 @@ export default function Login() {
           <button type="submit" className={CTA}>Log in</button>
           <Link className={CTA_Secondary} to="/signup">Sign up Instead</Link>
         </div>
+        { errors.length > 0 && errors.map(err => <li>{err.msg}</li>)}
       </form>
       
     </div>

@@ -12,17 +12,15 @@ export default function MCEEDitor({formData, setFormData}) {
       onInit={(evt, editor) => editorRef.current = editor}
       apiKey='ttl5j2zelyu37t9w6vlko7s4q2pxbs4xvt20gq1xlp74i7g5'
       init={{
-        plugins: 'advlist autolink lists link image charmap preview anchor ' +
-          'searchreplace visualblocks code fullscreen ' +
-          'insertdatetime media table code help wordcount'
-        ,
-        menubar: true,
-        toolbar: 'undo redo | formatselect | ' +
-        'bold italic backcolor | alignleft aligncenter ' +
-        'alignright alignjustify | bullist numlist outdent indent | ' +
-        'removeformat | help',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-
+        selector: 'textarea#premiumskinsandicons-naked',
+        skin: 'naked',
+        icons: 'small',
+        plugins: 'lists code table codesample link',
+        menubar: false,
+        statusbar: false,
+        toolbar: 'blocks | bold italic underline strikethrough bullist link codesample',
+        toolbar_location: 'bottom',
+        content_style: `#tinymce { background-color: #F1E7D0}`
       }}
       value={formData.description}
       onEditorChange={handleEditorChange}
