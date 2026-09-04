@@ -20,7 +20,7 @@ export default function MCEEDitor({formData, setFormData}) {
         statusbar: false,
         toolbar: 'blocks | bold italic underline strikethrough bullist link codesample',
         toolbar_location: 'bottom',
-        content_style: `#tinymce { background-color: #F1E7D0}`
+        content_style: `#tinymce { background-color: #F1E7D0};`
       }}
       value={formData.description}
       onEditorChange={handleEditorChange}

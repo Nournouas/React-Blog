@@ -3,16 +3,24 @@ import { postNewPost } from '../Utility/API'
 import { CTA, CTA_Secondary } from '../assets/styles';
 import { Navbar } from '../Components/Navbar';
 import MCEEDitor from './MCEEditor';
+import { useNavigate } from 'react-router';
 
 export default function CreatePost () {
   const [formData, setFormData] = useState({description: "I hereby declare..."});
+  const [errors, setErrors] = useState([]);
+  const navigate = useNavigate();
   const handleNewPost = async(e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     let data = {};
     formData.forEach((value, key) => data[key] = value);
-    console.log(data)
-    await postNewPost(data);
+    const response = await postNewPost(data);
+    console.log(response)
+    if (response != true) {
+      setErrors(response)
+    }else if (response === true){
+      navigate("/profile")
+    }
   }
 
   return(
@@ -31,7 +39,9 @@ export default function CreatePost () {
           <div className='flex flex-row justify-items-center items-start gap-3 w-100'>
             <button type="submit" className={CTA}>Publish</button>
           </div>
+          {errors && errors.length > 0 && errors.map((err, count) => <li key={count}>{err.msg}</li>)}
         </form>
+        
       </div>
     </div>
     

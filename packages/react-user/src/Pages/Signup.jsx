@@ -25,6 +25,8 @@ export default function Signup() {
       console.log(result.errors)
       setErrors(result.errors);
       return;
+    }else{
+      return true;
     }
      navigate("/login");
     }else {

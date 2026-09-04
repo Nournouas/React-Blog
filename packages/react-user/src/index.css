@@ -47,3 +47,7 @@ a.pending {
 .tox{
   width: 100%;
 }
+
+.tox {
+  border: 1px solid black !important;
+}

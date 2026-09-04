@@ -8,6 +8,7 @@ import Posts from '../Components/Posts';
 
 export default function Home() {
   const [posts, setPosts] = useState(undefined);
+  const [published, setPublished] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Home() {
     getPosts();
 
     return () => { ignore = true };
-  }, []);
+  }, [published]);
 
 if (posts != undefined){
   return (
@@ -33,7 +34,7 @@ if (posts != undefined){
       <div className='w-full  max-w-[300px] md:max-w-[500px] lg:max-w-[700px]'>
         <div className='flex flex-col h-full gap-6 bg-secondary p-6 w-full text-black'>
           <h1 className='self-center'>Writings</h1>
-          < Posts posts={posts}/>
+          < Posts posts={posts} setPub={setPublished} pub={published}/>
         </div>
       </div>
     </div>

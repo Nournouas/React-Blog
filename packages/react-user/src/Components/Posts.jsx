@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router';
 import { deleteOwnPost, getUserDetails } from '../Utility/API';
 import { CTA_DELETE } from '../assets/styles';
+import DOMPurify from 'dompurify';
 
 
 export default function Posts({ posts, setPub, pub}) {
@@ -56,7 +57,10 @@ export default function Posts({ posts, setPub, pub}) {
         
         <br />
         {
-        <div dangerouslySetInnerHTML={{ __html: post.body}}></div>
+        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body, {
+            ALLOWED_TAGS: ['p','br','b','strong','i','em','u','s','strike','ul','ol','li','a','blockquote','code','pre','h1','h2','h3','h4'],
+            ALLOWED_ATTR: ['href','target','rel']
+          })}}></div>
         }
         {currentAuthor && currentAuthor.id === post.authorId && 
           <button 
