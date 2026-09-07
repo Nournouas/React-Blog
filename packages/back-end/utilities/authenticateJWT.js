@@ -18,4 +18,28 @@ const authenticateToken = (req, res, next) => {
   }
 }
 
-module.exports = authenticateToken;
+const authenticateTokenExt = (token) => {
+  let auth;
+  if (token) {
+    jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decodedToken) => {
+      if (err) {
+        console.log(err.message);
+        auth = false
+        return false;
+      } else {
+        console.log("JWT authentication successful");
+        auth = true
+        return true;
+      }
+    });
+  }else {
+    auth = false;
+    return false;
+  }
+  return auth;
+}
+
+module.exports = {
+  authenticateToken,
+  authenticateTokenExt
+} 

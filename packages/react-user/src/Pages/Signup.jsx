@@ -26,9 +26,9 @@ export default function Signup() {
       setErrors(result.errors);
       return;
     }else{
-      return true;
+      navigate("/login");
     }
-     navigate("/login");
+     
     }else {
       alert("passwords dont match")
     }

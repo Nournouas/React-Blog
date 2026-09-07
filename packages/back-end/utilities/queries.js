@@ -28,12 +28,34 @@ async function findUserById (id) {
   return user;
 }
 
+async function findAuthorById (id) {
+  const user = prisma.user.findFirst({
+    where: {id},
+    select: {
+      name: true,
+      tarot: true,
+      posts: {
+        include: {
+          author: true,
+        }
+      },
+      comments: true
+    },
+  })
+
+  return user;
+}
+
 
 async function findAllPosts () {
   return await prisma.post.findMany({
     where: { pubStatus: true },
     include: {
-      comments: true
+      comments: true,
+      author: true,
+    },
+    orderBy: {
+      pubTime: "desc"
     }
   });
 }
@@ -74,7 +96,11 @@ async function findOwnPosts (authorId) {
   const ownPosts = await prisma.post.findMany({
     where: { authorId },
     include: {
-      comments: true
+      comments: true,
+      author: true,
+    },
+    orderBy: {
+      pubTime: "desc"
     }
   })
   return ownPosts;
@@ -87,6 +113,9 @@ async function findAuthorPosts (authorId) {
         {authorId},
         {pubStatus: true}
     ]},
+    orderBy: {
+      pubTime: "desc"
+    },
     include: {
       comments: true
     }
@@ -95,32 +124,36 @@ async function findAuthorPosts (authorId) {
 }
 
 // POST =================================================================================
-async function createUser (email, password) {
+async function createUser (email, password, name, tarot) {
   const user = await prisma.user.create({
     data: {
       email,
-      password
+      name,
+      password,
+      tarot
     }
   })
   return user
 }
 
-async function createNewPost (body, title, authorId) {
+async function createNewPost (body, title, authorId, authorName) {
   const newPost = await prisma.post.create({
     data: {
       body,
       title,
-      authorId
+      authorId,
+      authorName
     }
   })
   return newPost;
 }
 
-async function createNewComment (authorId, postId, body){
+async function createNewComment (authorId, postId, body, authorName){
   const newComment = await prisma.comment.create({
     data: {
       body,
       authorId,
+      authorName,
       postId
     }
   });
@@ -164,5 +197,6 @@ module.exports = {
   updatePostStatus,
   findSinglePostUnpublished,
   findAllPostsUnpublished,
-  findAuthorPosts
+  findAuthorPosts,
+  findAuthorById
 }

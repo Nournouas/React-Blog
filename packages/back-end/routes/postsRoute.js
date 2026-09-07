@@ -3,9 +3,10 @@ const express = require("express");
 const postsRouter = express.Router();
 const authenticateToken = require("../utilities/authenticateJWT");
 const { getUserPosts, getAllUnpublishedPosts, switchPostPublished, deleteComment, getAllPosts, createPost, getSinglePost, getOwnPosts, deletePost, createComment } = require("../controllers/postsController");
+const { validateCreateForm } = require("../middlewares/validate")
 
 postsRouter.get("/posts", getAllPosts);
-postsRouter.use(authenticateToken);
+//postsRouter.use(authenticateToken);
 postsRouter.post("/posts/create", createPost);
 postsRouter.get("/posts/unpublished", getAllUnpublishedPosts);
 postsRouter.get("/posts/profile", getOwnPosts);

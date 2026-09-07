@@ -34,8 +34,13 @@ if (posts != undefined){
       <div className='flex flex-col w-full h-full max-w-75 md:max-w-125 lg:max-w-175'>
         <ProfileModule name={currentAuthor.name} postCount={posts.length} tarot={currentAuthor.tarot}/>
         <div className='flex-1 flex flex-col gap-6 bg-secondary p-6 w-full text-black'>
-          <h1>Writings:</h1>
-          < Posts posts={posts} setPub={setPublished} pub={published}/>
+          {posts.length > 0 &&
+            <>
+              <h1>Writings:</h1>
+              < Posts posts={posts} setPub={setPublished} pub={published}/>
+            </>
+          }
+          
         </div>
       </div>
     </div>

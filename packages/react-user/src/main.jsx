@@ -12,6 +12,8 @@ import My404Componenet from "./Pages/My404Componenet";
 import Profile from "./Pages/Profile";
 import OtherProfile from "./Pages/OtherProfile";
 import NewPost from "./Pages/NewPost";
+import ViewPost from "./Pages/ViewPost";
+
 
 const root = document.getElementById("root");
 ReactDOM.createRoot(root).render(
@@ -24,6 +26,7 @@ ReactDOM.createRoot(root).render(
       <Route path="home" element={< Home />} />
       <Route path="profile" element={< Profile />} />
       <Route path="new-post" element={< NewPost />} />
+      <Route path="posts/:postId" element={< ViewPost />} />
       <Route path="Users/:profileId" element={< OtherProfile />} />
       <Route path="*" exact={true} element={< My404Componenet />} />
     </Routes>

@@ -89,6 +89,28 @@ export const postNewPost = async (data) => {
   }
 }
 
+export const postNewComment = async (data, postId) => {
+  try{
+    const response =  await fetch(`http://localhost:3001/API/posts/${postId}/add_comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': localStorage.getItem('token'),
+      },
+      body: JSON.stringify(data)
+    })
+    const result = await response.json();
+    console.log(result.errors)
+    if (!response.ok){
+      return result.errors;
+    }
+    return true;
+  }catch (error) {
+    console.log("error");
+    console.error(error.message);
+  }
+}
+
 export const getUserDetails = async () => {
   try{
     const response = await fetch("http://localhost:3001/details", {
@@ -169,6 +191,27 @@ export const deleteOwnPost = async (postId) => {
     if (!response.ok){
       throw new Error(`Response status: ${response.status}`);
     }
+    const result = await response.json();
+    return result
+  }catch(err){
+    console.log("error");
+    console.error(err.message)
+  }
+}
+
+export const getSinglePost = async (postId) => {
+  try{
+    const response = await fetch(`http://localhost:3001/API/posts/${postId}`, {
+      method: "GET",
+      headers: {
+        Accept: 'application/json',
+        'Authorization': localStorage.getItem('token'),
+      },
+    });
+    if (!response.ok){
+      throw new Error(`Response status: ${response.status}`);
+    }
+
     const result = await response.json();
     return result
   }catch(err){
