@@ -26,7 +26,7 @@ export default function CreatePost () {
   return(
     <div className='flex flex-col items-center'>
       <Navbar />
-      <div className='flex flex-1 gap-0 flex-col p-8 w-full max-w-[300px] md:max-w-[500px] lg:max-w-[700px] items-center justify-center bg-background'>
+      <div className='flex flex-1 gap-0 flex-col p-8 w-full max-w-75 md:max-w-125 lg:max-w-175 items-center justify-center bg-background'>
         <form onSubmit={handleNewPost} action="http://localhost:3001/API/posts/create" method="POST" className='flex w-full bg-secondary flex-col gap-6 p-6'>
           <div className='flex flex-col justify-items-center items-start gap-3 w-full'>
             <label htmlFor="title">Title:</label>

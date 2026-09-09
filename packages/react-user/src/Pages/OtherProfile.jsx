@@ -34,7 +34,7 @@ if (loading != true && error === undefined){
   return (
     <div className='flex flex-col items-center'>
       <Navbar/>
-      <div className='w-full max-w-[300px] md:max-w-[500px] lg:max-w-[700px]'>
+      <div className='w-full max-w-75 md:max-w-125 lg:max-w-175'>
         <div className='flex flex-col  gap-6 bg-secondary p-6 w-full text-black'>
           <h1>{author.name}'s Writings:</h1>
           < Posts posts={author.posts}/>
