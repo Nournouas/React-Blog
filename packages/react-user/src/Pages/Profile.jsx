@@ -9,25 +9,32 @@ export default function Profile() {
   const [posts, setPosts] = useState(undefined);
   const [currentAuthor, setCurrentAuthor] = useState(undefined);
   const [published, setPublished] = useState(0);
-  const [hideCreatePost, setHideCreatePost] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function getPosts() {
-      const fetchedPosts = await getOwnPosts()
-      const details = await getUserDetails()
-      if (fetchedPosts === "LOGIN"){
-        navigate("/login")
-      }else{
-        console.log("fetched, updated");
-        setPosts(fetchedPosts);
-        console.log("setPosts done")
-        setCurrentAuthor(details);
+      try{
+        const fetchedPosts = await getOwnPosts();
+        const details = await getUserDetails();
+        if (fetchedPosts === "LOGIN"){
+          navigate("/login")
+        }else{
+          setPosts(fetchedPosts);
+          setCurrentAuthor(details);
+        }
+      }catch(e){
+        setError(e);
+      }finally{
+        setLoading(false);
       }
+
     }
     getPosts();
   }, [published]);
 
-if (posts != undefined){
+if (loading != true && error === undefined){
   return (
     <div className='flex h-full flex-col items-center'>
       <Navbar/>
@@ -40,9 +47,17 @@ if (posts != undefined){
               < Posts posts={posts} setPub={setPublished} pub={published}/>
             </>
           }
-          
         </div>
       </div>
+    </div>
+  )
+}else{
+  return(
+    <div className="flex h-full flex-col items-center ">
+      <Navbar/>
+      <br />
+      <br />
+      <h1>{error === undefined ? "Loading..." : "failed to load"}</h1>
     </div>
   )
 }

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getSinglePost, getUserDetails } from '../Utility/API';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Navbar } from '../Components/Navbar';
-import Posts from '../Components/Posts';
 import ProfileModule from '../Components/ProfileModule';
 import DOMPurify from 'dompurify';
 import Comments from '../Components/Comments';
@@ -10,25 +9,33 @@ import Comments from '../Components/Comments';
 export default function ViewPost() {
   const [post, setPost] = useState(undefined);
   const [currentAuthor, setCurrentAuthor] = useState(undefined);
+  const [pub, setPub] = useState(0);
   const params = useParams();
-  
   const navigate = useNavigate();
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function getPost() {
-      const fetchedPost = await getSinglePost(params.postId);
-      const details = await getUserDetails()
-      if (fetchedPost === "LOGIN"){
-        navigate("/login")
-      }else{
-        setPost(fetchedPost);
-        setCurrentAuthor(details);
+      try{
+        const fetchedPost = await getSinglePost(params.postId);
+        const details = await getUserDetails()
+        if (fetchedPost === "LOGIN"){
+          navigate("/login")
+        }else{
+          setPost(fetchedPost);
+          setCurrentAuthor(details);
+        }
+      }catch (e){
+        setError(e);
+      }finally {
+        setLoading(false);
       }
     }
     getPost();
-  }, []);
+  }, [pub]);
 
-if (post != undefined){
-  console.log(post)
+if (loading != true && error === undefined){
   const rawDate = new Date(post.pubTime);
   const date = `${rawDate.getFullYear()}/${rawDate.getMonth()}/${rawDate.getDay()}  ${rawDate.getHours()}:${rawDate.getMinutes()}`;
   return (
@@ -45,9 +52,18 @@ if (post != undefined){
         }
         <div className='w-100 h-1 bg-black my-6'></div>
         <Link to="/home" className='bold underline'>Go Home</Link>
-        <Comments postId={post.id} comments={post.comments} author={currentAuthor} />
+        <Comments postId={post.id} comments={post.comments} author={currentAuthor} pub={pub} setPub={setPub} />
         </div>
       </div>
+    </div>
+  )
+}else{
+  return(
+    <div className="flex h-full flex-col items-center ">
+      <Navbar/>
+      <br />
+      <br />
+      <h1>{error === undefined ? "Loading..." : "failed to load"}</h1>
     </div>
   )
 }

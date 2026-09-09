@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { CTA, CTA_Secondary, CTA_DELETE } from '../assets/styles';
-import { postNewComment } from '../Utility/API'
+import { postNewComment, deleteOwnComment } from '../Utility/API'
 
-export default function Comments({ postId, comments=[], author }) {
+export default function Comments({ postId, comments=[], author, pub, setPub }) {
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
@@ -17,13 +17,19 @@ export default function Comments({ postId, comments=[], author }) {
     if (response != true) {
       setErrors(response)
     }
+    setPub(pub + 1);
   }
 
-  const handleDeleteComment = async () => {
-    console.log("DELETE HANDLE")
+  const handleDeleteComment = async (commentId) => {
+    const response = await deleteOwnComment(commentId, postId);
+    if (response) {
+      console.log("deleted");
+    } else{
+      console.log("not authority")
+    }
+    setPub(pub + 1);
   }
 
-  console.log(comments)
   const commentList = comments.map((comment) => {
     const rawDate = new Date(comment.pubTime);
     const date = `${rawDate.getFullYear()}/${rawDate.getMonth()}/${rawDate.getDay()}  ${rawDate.getHours()}:${rawDate.getMinutes()}`;
@@ -31,7 +37,7 @@ export default function Comments({ postId, comments=[], author }) {
                 <h3 className="text-primary">{comment.authorName} says:</h3>
                 <p>{comment.body}</p>
                 <p className="self-end">{date}</p>
-                {comment.authorId === author.id && <button onClick={handleDeleteComment} className={CTA_DELETE}>Delete Comment</button>}
+                {comment.authorId === author.id && <button onClick={() => handleDeleteComment(comment.id)} className={CTA_DELETE}>Delete Comment</button>}
             </div>
   })
   

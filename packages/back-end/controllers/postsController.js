@@ -137,16 +137,19 @@ const deletePost = async (req, res) => {
 }
 
 const deleteComment = async (req, res) => {
+  const token = req.headers["authorization"];
+  const auth = authenticateTokenExt(token);
+  if (auth != true) return res.send(JSON.stringify("LOGIN"));
   try{
-    const userId = (jwt.verify(req.cookies.jwt, process.env.JWT_ACCESS_TOKEN)).id;
+    const userId = (jwt.verify(token, process.env.JWT_ACCESS_TOKEN)).id;
     const user = await findUserById(userId);
     const commentId = parseInt(req.params.commentId);
     const comment = await findSingleComment(commentId);
     if (comment.authorId === userId || user.admin === true){
       await deleteCommentById(commentId);
-      return res.send("Comment deleted successfully")
+      return res.send(JSON.stringify(true))
     }else{
-      return res.send("Not authorised to delete this comment")
+      return res.send(JSON.stringify(false))
     }
   }catch (err){
     console.error(err);

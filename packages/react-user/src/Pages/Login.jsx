@@ -1,36 +1,27 @@
-import { React, useState } from 'react'
+import { useState } from 'react'
 import { CTA, CTA_Secondary } from '../assets/styles'
 import { Link, useNavigate } from "react-router";
 import Header from '../Components/Header'
+import { logInPost } from '../Utility/API';
 
 export default function Login() {
     const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
-    const handleFormSubmit = async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      let data = {}
-      formData.forEach((value, key) => data[key] = value);
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-           Accept: 'application/json',
-          "Content-Type": "application/json",
-          credentials: 'include',
-        },
-        body: JSON.stringify(data)
-      })
-      const result = await response.json();
-      if (!response.ok){
-        console.log(result.errors)
-        setErrors(result.errors);
-        return;
-      }
-      
-      localStorage.setItem('token', result)
-      navigate("/home")
 
+    const handleFormSubmit = async (e) => {
+      try{
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        let data = {}
+        formData.forEach((value, key) => data[key] = value);
+        const logInErrors = await logInPost(data);
+        localStorage.setItem('token', logInErrors)
+        navigate("/home")
+      }catch (e){
+        setErrors(e);
+      } 
     }
+
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-secondary">
       <Header title="Login to View" highlight="Posts"/>
@@ -49,7 +40,6 @@ export default function Login() {
         </div>
         { errors.length > 0 && errors.map(err => <li>{err.msg}</li>)}
       </form>
-      
     </div>
   )
 }

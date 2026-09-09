@@ -10,24 +10,29 @@ export default function Home() {
   const [posts, setPosts] = useState(undefined);
   const [published, setPublished] = useState(0);
   const navigate = useNavigate();
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
-    let ignore = false;
     async function getPosts() {
-      const fetchedPosts = await getAllPosts();
-      if (ignore) return;
-      if (fetchedPosts === "LOGIN"){
-        navigate("/login")
-      }else{
-        setPosts(fetchedPosts);
+      try{
+        const fetchedPosts = await getAllPosts();
+        if (fetchedPosts === "LOGIN"){
+          navigate("/login");
+        }else{
+          setPosts(fetchedPosts);
+        }
+      }catch(e){
+        setError(e);
+      }finally{
+        setLoading(false);
       }
     }
     getPosts();
-
-    return () => { ignore = true };
   }, [published]);
 
-if (posts != undefined){
+if (loading != true && error === undefined){
   return (
     <div className='flex flex-col items-center h-full'>
       <Navbar/>
@@ -37,6 +42,15 @@ if (posts != undefined){
           < Posts posts={posts} setPub={setPublished} pub={published}/>
         </div>
       </div>
+    </div>
+  )
+}else{
+  return(
+    <div className="flex h-full flex-col items-center ">
+      <Navbar/>
+      <br />
+      <br />
+      <h1>{error === undefined ? "Loading..." : "failed to fetch posts, Please try again"}</h1>
     </div>
   )
 }
