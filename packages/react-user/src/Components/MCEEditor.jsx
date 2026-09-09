@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
 export default function MCEEDitor({formData, setFormData}) {
   const editorRef = useRef(null);
-
   const handleEditorChange = (content, editor) => {
     setFormData({...formData, description: content})
   }

@@ -1,31 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { CTA, CTA_Secondary, CTA_DELETE } from '../assets/styles';
+import { CTA,  CTA_DELETE } from '../assets/styles';
 import { postNewComment, deleteOwnComment } from '../Utility/API'
 
 export default function Comments({ postId, comments=[], author, pub, setPub }) {
-  const [errors, setErrors] = useState([]);
-  const navigate = useNavigate();
-
+  const [commentErrors, setCommentErrors] = useState([]);
+  const [deleteError, setdeleteError] = useState(undefined);
+  
   const handleNewComment = async(e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     let data = {};
     formData.forEach((value, key) => data[key] = value);
     const response = await postNewComment(data, postId);
-    console.log(response)
     if (response != true) {
-      setErrors(response)
+      setCommentErrors(response)
     }
     setPub(pub + 1);
   }
 
   const handleDeleteComment = async (commentId) => {
-    const response = await deleteOwnComment(commentId, postId);
-    if (response) {
-      console.log("deleted");
-    } else{
-      console.log("not authority")
+    try{
+      await deleteOwnComment(commentId, postId);
+    }catch(e){
+      setdeleteError(e)
     }
     setPub(pub + 1);
   }
@@ -52,10 +49,11 @@ export default function Comments({ postId, comments=[], author, pub, setPub }) {
         <div className='flex flex-row justify-items-center items-start gap-3 w-100'>
           <button type="submit" className={CTA}>Publish</button>
         </div>
-        {errors && errors.length > 0 && errors.map((err, count) => <li key={count}>{err.msg}</li>)}
+        {commentErrors && commentErrors.length > 0 && commentErrors.map((err, count) => <li key={count}>{err.msg}</li>)}
       </form>
       <h3 className="mb-3">Comments:</h3>
       {commentList}
+      {deleteError && alert("error deleting this comment")}
     </div>
     
   )

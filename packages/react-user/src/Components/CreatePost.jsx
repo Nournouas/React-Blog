@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { postNewPost } from '../Utility/API'
-import { CTA, CTA_Secondary } from '../assets/styles';
+import { CTA } from '../assets/styles';
 import { Navbar } from '../Components/Navbar';
 import MCEEDitor from './MCEEditor';
 import { useNavigate } from 'react-router';
@@ -15,7 +15,6 @@ export default function CreatePost () {
     let data = {};
     formData.forEach((value, key) => data[key] = value);
     const response = await postNewPost(data);
-    console.log(response)
     if (response != true) {
       setErrors(response)
     }else if (response === true){

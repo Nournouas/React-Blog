@@ -1,0 +1,14 @@
+export const cardLinks = [
+    "/t-1.webp",
+    "/t-2.webp",
+    "/t-3.webp",
+    "/t-4.webp",
+    "/t-5.webp",
+    "/t-6.webp",
+    "/t-7.webp",
+    "/t-8.webp",
+    "/t-9.webp",
+    "/t-10.webp",
+    "/t-11.webp",
+    "/t-12.webp",
+  ];

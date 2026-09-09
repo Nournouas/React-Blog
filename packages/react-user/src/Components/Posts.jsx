@@ -3,47 +3,49 @@ import { Link } from 'react-router';
 import { deleteOwnPost, getUserDetails } from '../Utility/API';
 import { CTA_DELETE } from '../assets/styles';
 import DOMPurify from 'dompurify';
+import { cardLinks } from '../Utility/cardLinks';
 
 
 export default function Posts({ posts, setPub, pub}) {
-  const parser = new DOMParser();
-      const cardLinks = [
-      "/t-1.webp",
-      "/t-2.webp",
-      "/t-3.webp",
-      "/t-4.webp",
-      "/t-5.webp",
-      "/t-6.webp",
-      "/t-7.webp",
-      "/t-8.webp",
-      "/t-9.webp",
-      "/t-10.webp",
-      "/t-11.webp",
-      "/t-12.webp",
-    ]
+  const [currentAuthor, setCurrentAuthor] = useState(undefined);
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(true);
 
-    const [currentAuthor, setCurrentAuthor] = useState(undefined);
-    const handleDeletePost = async (postId) => {
-      const response = await deleteOwnPost(postId)
-      if (response) console.log("deleted");
+  const handleDeletePost = async (postId) => {
+    try{
+      await deleteOwnPost(postId);
       await setPub(pub + 1);
+    }catch(e){
+      setError(e);
+    }finally{
+      setLoading(false);
     }
-    useEffect(() => {
-      async function getPosts() {
+  }
+
+  useEffect(() => {
+    async function getPosts() {
+      try{
         const details = await getUserDetails()
         if (details === "LOGIN"){
           navigate("/login")
         }else{
           setCurrentAuthor(details);
         }
+      }catch(e){
+        setError(e)
+      }finally{
+        setLoading(false);
       }
-      getPosts();
-    }, []);
+    }
+    getPosts();
+  }, []);
 
-    let listPosts = posts.map((post) => {
-    const pubDate = new Date(post.pubTime);
-    const date = `${pubDate.getFullYear()}/${pubDate.getMonth()}/${pubDate.getDay()}  ${pubDate.getHours()}:${pubDate.getMinutes()}`;
-    return <div key={post.id} className="relative flex flex-col p-4 max-h-100  rounded-sm before:absolute before:inset-0 before:bg-cover before:bg-[url(/paper-bg.jpg)] before:opacity-30 before:content-[''] before:pointer-events-none" >
+  let listPosts = posts.map((post) => {
+  const pubDate = new Date(post.pubTime);
+  const date = `${pubDate.getFullYear()}/${pubDate.getMonth()}/${pubDate.getDay()}  ${pubDate.getHours()}:${pubDate.getMinutes()}`;
+  
+  return (
+    <div key={post.id} className="relative flex flex-col p-4 max-h-100  rounded-sm before:absolute before:inset-0 before:bg-cover before:bg-[url(/paper-bg.jpg)] before:opacity-30 before:content-[''] before:pointer-events-none" >
         <div className='flex flex-row gap-2 items-center'>
           <img src={cardLinks[post.author.tarot]} alt="" className='max-h-20' />
           <div className='flex flex-row justify-between w-full'>
@@ -54,7 +56,6 @@ export default function Posts({ posts, setPub, pub}) {
             <p>{date}</p>
           </div>
         </div>
-        
         <br />
         {
         <div className='max-h-40 overflow-hidden' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.body, {
@@ -62,7 +63,6 @@ export default function Posts({ posts, setPub, pub}) {
             ALLOWED_ATTR: ['href','target','rel']
           })}}></div>
         }
-        
         <div className='flex flex-row justify-between items-center mt-8'>
           <Link to={"/posts/" + post.id} className="p-2 bg-background z-2 text-sm rounded-s text-white hover:bg-black transition delay-50 duration-120 ease-in-out"> View Post</Link>
           {currentAuthor && currentAuthor.id === post.authorId && 
@@ -74,8 +74,16 @@ export default function Posts({ posts, setPub, pub}) {
             }
         </div>
     </div>
-  });
+  )
+});
+
+if (loading != true && error === undefined){
   return (
     listPosts
   )
+}else{
+  return(
+    <h3 className='text-red-700'>Error While Deleting...</h3>
+  )
+}
 }
